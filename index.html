@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>買いまわり計算</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f4f0; --surface:#fff; --surface2:#f9f8f5; --border:#e8e4dc;
+  --text:#1a1714; --text2:#6b6560; --text3:#9e9890;
+  --red:#e8291a; --red-light:#fff1f0; --yellow:#f5a623; --blue:#2a6dd9; --green:#1aaa55;
+  --hero-bg:#1a1714; --nav-h:64px; --radius:14px; --radius-sm:8px;
+  --mono:'DM Mono',monospace; --sans:'Noto Sans JP',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);font-family:var(--sans);color:var(--text)}
+#app{display:flex;flex-direction:column;height:100%;max-width:430px;margin:0 auto;background:var(--bg);box-shadow:0 0 40px rgba(0,0,0,.12)}
+#pages{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:calc(var(--nav-h) + 12px)}
+.page{display:none;animation:fadeUp .25s ease}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ph{padding:20px 16px 14px;background:var(--surface);border-bottom:1px solid var(--border)}
+.ph h1{font-size:19px;font-weight:700}
+.ph small{font-size:12px;color:var(--text2);margin-top:2px;display:block}
+.slbl{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;padding:18px 16px 8px}
+.card{background:var(--surface);border-radius:var(--radius);margin:0 12px 10px;overflow:hidden;border:1px solid var(--border)}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 0}
+.ch-t{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.06em;text-transform:uppercase}
+.card-body{padding:10px 14px 14px}
+
+/* Entry banner */
+.entry-banner{display:flex;align-items:center;gap:10px;background:var(--red);color:#fff;padding:16px 16px;text-decoration:none}
+.eb-logo{width:32px;height:32px;background:#fff;color:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0}
+.eb-text{flex:1}
+.eb-title{font-size:16px;font-weight:700;line-height:1.3}
+.eb-sub{font-size:13px;opacity:.85;margin-top:8px}
+.eb-btn{font-size:11px;background:rgba(255,255,255,.2);border-radius:20px;padding:8px 16px;white-space:nowrap;font-weight:600}
+.eb-note{font-size:13px;color:rgba(17, 17, 17, 0.85);text-align:center;padding:6px;background:rgba(0,0,0,.15)}
+
+/* Hero */
+.hero{background:var(--hero-bg);color:#fff;padding:24px 20px 20px;display:flex;align-items:flex-start}
+.h-main{flex:1}
+.h-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.15em;color:rgba(255,255,255,.5);margin-bottom:4px}
+.h-rate{font-family:var(--mono);font-size:58px;font-weight:500;line-height:1}
+.h-rate span{font-size:21px;opacity:.7;margin-left:2px}
+.h-sub{display:flex;align-items:baseline;gap:4px;margin-top:6px}
+.h-shops{font-family:var(--mono);font-size:30px;font-weight:500}
+.h-lbl2{font-size:10px;color:rgba(255,255,255,.5)}
+.h-badges{display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-top:4px}
+.h-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:3px 9px;font-size:9px;color:rgba(255,255,255,.6);font-family:var(--mono);letter-spacing:.05em;display:none;white-space:nowrap}
+
+/* Progress */
+.progress-wrap{padding:12px 14px}
+.prog-bar{display:flex;gap:3px}
+.prog-dot{flex:1;height:6px;border-radius:3px;background:var(--border);transition:background .3s}
+.prog-dot.done{background:var(--red)}
+
+/* Shop list */
+.shop-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:10px}
+.shop-row:last-of-type{margin-bottom:0}
+.field-wrap{display:flex;flex-direction:column;gap:3px}
+.field-lbl{font-size:9px;color:var(--text3);font-weight:600;letter-spacing:.05em}
+.sname{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 9px;font-size:13px;font-family:var(--sans);background:var(--surface2);color:var(--text);outline:none;transition:border-color .2s}
+.sname:focus{border-color:var(--red)}
+.samt-wrap{display:flex;align-items:center;gap:4px}
+.samt{width:90px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 9px;font-size:13px;font-family:var(--mono);text-align:right;background:var(--surface2);color:var(--text);outline:none;transition:border-color .2s;-moz-appearance:textfield}
+.samt::-webkit-outer-spin-button,.samt::-webkit-inner-spin-button{-webkit-appearance:none}
+.samt:focus{border-color:var(--red)}
+.syen{font-size:12px;color:var(--text2)}
+.spt{display:none}
+.sdel{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--text3);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:1px;transition:all .15s}
+.sdel:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.tax-row{display:flex;align-items:center;gap:5px}
+.tax-cb{accent-color:var(--red);width:14px;height:14px;cursor:pointer}
+.tax-lbl{font-size:11px;color:var(--text2);cursor:pointer}
+.add-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;border:1.5px dashed var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);font-size:13px;font-family:var(--sans);cursor:pointer;margin-top:12px;transition:all .2s}
+.add-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* Summary */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.scell{background:var(--surface);padding:10px 12px}
+.slb{font-size:11px;color:var(--text2);margin-bottom:4px}
+.sval{font-family:var(--mono);font-size:19px;font-weight:500}
+.sval .sunit{font-size:12px;color:var(--text3);margin-left:1px}
+.ss{font-size:9px;color:var(--text3);margin-top:2px}
+.scell.highlight .sval{color:var(--red)}
+.cap-warn{margin:0 12px 10px;background:#fff8e1;border:1px solid #f5c842;border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;color:#7a5c00;display:none}
+.cap-warn.show{display:block}
+.cap-ok{margin:0 12px 10px;background:#f0fdf4;border:1px solid #86efac;border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--green);display:none}
+.cap-ok.show{display:block}
+
+/* Bonus */
+.bonus-row{display:flex;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.bonus-row:last-child{border-bottom:none;padding-bottom:0}
+.bonus-row:first-child{padding-top:0}
+.bn{font-size:13px;font-weight:600;flex:1}
+.bd2{font-size:11px;color:var(--text2)}
+.brate{font-family:var(--mono);font-size:12px;color:var(--text2);margin-right:8px}
+.bonus-toggle{position:relative;width:38px;height:22px;cursor:pointer;flex-shrink:0}
+.bonus-toggle input{opacity:0;width:0;height:0}
+.bonus-slider{position:absolute;inset:0;background:var(--border);border-radius:11px;transition:.2s}
+.bonus-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.bonus-toggle input:checked + .bonus-slider{background:var(--red)}
+.bonus-toggle input:checked + .bonus-slider::before{transform:translateX(16px)}
+.blink{font-size:11px;color:var(--blue);text-decoration:none;margin-right:8px;white-space:nowrap}
+.kattara-btns{display:flex;gap:4px}
+.kbtn{border:1px solid var(--border);border-radius:6px;padding:4px 9px;font-size:12px;background:var(--surface2);color:var(--text2);cursor:pointer;font-family:var(--sans);transition:all .15s}
+.kbtn.active{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* Inline banner — 淡い赤 */
+.inline-banner{background:linear-gradient(135deg,#fff1f0 0%,#ffe4e2 100%);border:1px solid #ffd5d2;border-radius:var(--radius);margin:0 12px 10px;padding:16px;display:flex;align-items:center;gap:12px}
+.ib-icon{font-size:28px}
+.ib-body{flex:1}
+.ib-ttl{font-size:14px;font-weight:700;color:var(--text)}
+.ib-desc{font-size:11px;color:var(--text2);margin-top:2px}
+.ib-btn{display:inline-block;margin-top:8px;background:var(--red);color:#fff;border-radius:20px;padding:8px 16px;font-size:14px;font-size:14px;font-weight:600;text-decoration:none}
+.ib-note{font-size:9px;color:var(--text3);margin-top:4px}
+
+/* Rec shops */
+.rec-shop{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.rec-shop:last-child{border-bottom:none}
+.rec-icon{width:36px;height:36px;border-radius:10px;background:var(--red-light);font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.snm{font-size:13px;font-weight:600}
+.sds{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.4}
+.stags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.stag{font-size:9px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--text2)}
+.stag.r{background:var(--red-light);color:var(--red);border-color:#ffd5d2}
+
+/* Guide */
+.gh{background:var(--hero-bg);color:#fff;padding:20px}
+.gh-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.4);margin-bottom:8px}
+.gh-ttl{font-size:20px;font-weight:700;line-height:1.35}
+.gh-desc{font-size:12px;color:rgba(255,255,255,.5);margin-top:6px}
+.tip{padding:12px 0;border-bottom:1px solid var(--border)}
+.tip:last-child{border-bottom:none}
+.tip-num{font-family:var(--mono);font-size:9px;color:var(--red);letter-spacing:.1em;margin-bottom:4px}
+.gtt{font-size:13px;font-weight:700;margin-bottom:4px}
+.gtd{font-size:12px;color:var(--text2);line-height:1.6}
+.gttag-link{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:11px;color:var(--red);font-weight:600;text-decoration:none;background:var(--red-light);padding:4px 10px;border-radius:20px}
+.faq-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-size:13px;font-weight:700;margin-bottom:4px}
+.faq-a{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* Calendar */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.cal-month{font-family:var(--mono);font-size:18px;font-weight:500}
+.cal-nav-btn{width:32px;height:32px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all .15s}
+.cal-nav-btn:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.cal-legend{display:flex;gap:12px;padding:8px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.cli{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)}
+.cli::before{content:'';width:7px;height:7px;border-radius:50%}
+.cli.marathon::before{background:var(--red)}
+.cli.super::before{background:var(--yellow)}
+.cli.point::before{background:var(--blue)}
+.cdow{display:grid;grid-template-columns:repeat(7,1fr);background:var(--surface);border-bottom:1px solid var(--border)}
+.cdow div{text-align:center;font-size:11px;padding:6px 0;color:var(--text2);font-weight:600}
+.cdow div:first-child{color:var(--red)}
+.cdow div:last-child{color:var(--blue)}
+#cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border)}
+.cal-day{background:var(--surface);padding:6px 4px;min-height:44px}
+.cal-day.other{opacity:.35}
+.cal-day.today .cdn{background:var(--hero-bg);color:#fff;border-radius:50%}
+.cdn{font-size:12px;font-family:var(--mono);display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px}
+.cal-day:nth-child(7n+1) .cdn{color:var(--red)}
+.cal-day:nth-child(7n) .cdn{color:var(--blue)}
+.cdots{display:flex;gap:2px;flex-wrap:wrap;margin-top:2px}
+.cdot{width:5px;height:5px;border-radius:50%}
+.cdot.marathon{background:var(--red)}
+.cdot.super{background:var(--yellow)}
+.cdot.point{background:var(--blue)}
+.cal-events-list{padding:0 12px 12px}
+.ev-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.ev-item:last-child{border-bottom:none}
+.ev-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.ev-dot.marathon{background:var(--red)}
+.ev-dot.super{background:var(--yellow)}
+.ev-dot.point{background:var(--blue)}
+.ev-name{font-size:13px;font-weight:600}
+.ev-date{font-size:11px;color:var(--text2);font-family:var(--mono);margin-top:1px}
+.ev-desc{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4}
+.cal-note{background:#fffbf0;border:1px solid #f5d47a;border-radius:var(--radius-sm);padding:10px 12px;font-size:11px;color:#7a6000;margin:0 12px 12px}
+
+/* Tokutoku */
+.tok-card{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.tok-card:last-child{border-bottom:none}
+.tok-icon{font-size:24px}
+.tnm{font-size:13px;font-weight:600}
+.tds{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.4}
+.mini-about{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);margin:0 12px 12px;padding:12px 14px;text-align:center}
+.mttl{font-size:13px;font-weight:700;margin-bottom:8px}
+.mlinks{display:flex;justify-content:center;margin-bottom:6px}
+.mlinks a{font-size:12px;color:var(--blue);text-decoration:none;padding:0 8px;border-right:1px solid var(--border)}
+.mlinks a:last-child{border-right:none}
+.mmeta{font-size:10px;color:var(--text3);margin-bottom:8px}
+.mbtn{display:inline-flex;align-items:center;gap:5px;background:var(--hero-bg);color:#fff;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:var(--sans)}
+
+/* Nav */
+#bottom-nav{height:var(--nav-h);display:flex;background:var(--surface);border-top:1px solid var(--border);position:sticky;bottom:0;z-index:100}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:transparent;padding:0;color:#c8c4bc;transition:color .15s}
+.nav-item.active{color:var(--text)}
+.ni-icon{font-size:22px;line-height:1}
+.ni-lbl{font-size:10px;font-weight:600;font-family:var(--sans)}
+
+/* Install overlay */
+#installOverlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+#installOverlay.show{display:flex}
+.install-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:430px;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.install-sheet h2{font-size:18px;font-weight:700;margin-bottom:6px}
+.install-sheet p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.install-close{width:100%;padding:12px;background:var(--hero-bg);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a1714">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/rakuten-marathon/sw.js');
+  }
+</script>
+</head>
+<body>
+<div id="app">
+  <div id="pages">
+
+    <!-- CALC -->
+    <div id="page-calc" class="page active">
+      <a class="entry-banner" id="entry-banner-link" href="#" target="_blank" rel="noopener">
+        <div class="eb-text" style="text-align:center;">
+          <div class="eb-title" id="eb-title">読み込み中...</div>
+          <div class="eb-sub" id="eb-sub"></div>
+          <div class="eb-btn" style="display:inline-block;margin-top:12px;font-size:14px;color:#e8291a;background:#fff;padding:8px 20px;border-radius:20px;" id="eb-btn"></div>
+        </div>
+      </a>
+      <div class="eb-note">※ 広告リンクを含みます</div>
+
+      <div class="hero">
+        <div class="h-main">
+          <div class="h-lbl">TOTAL RATE</div>
+          <div class="h-rate"><span id="h-rate-val">1</span><span>倍</span></div>
+          <div class="h-sub">
+            <div class="h-shops" id="h-shops">0</div>
+            <div class="h-lbl2">店舗購入済み</div>
+          </div>
+        </div>
+        <div class="h-badges">
+          <div id="badge-tax" class="h-badge">税抜き換算</div>
+          <div id="badge-card" class="h-badge">楽天カード +1倍</div>
+          <div id="badge-goten" class="h-badge">5と0のつく日</div>
+          <div id="badge-k1" class="h-badge">買ったら倍 +1倍</div>
+          <div id="badge-k2" class="h-badge">買ったら倍 +2倍</div>
+        </div>
+      </div>
+
+      <!-- 購入店舗リスト（ヒーロー直下） -->
+      <div class="card">
+        <div class="ch">
+          <div class="ch-t">購入店舗リスト</div>
+          <div class="tax-row">
+            <input type="checkbox" id="tax-cb" class="tax-cb">
+            <label for="tax-cb" class="tax-lbl">税抜き</label>
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <div class="prog-bar" id="prog-bar">
+            <div class="prog-dot"></div><div class="prog-dot"></div><div class="prog-dot"></div>
+            <div class="prog-dot"></div><div class="prog-dot"></div><div class="prog-dot"></div>
+            <div class="prog-dot"></div><div class="prog-dot"></div><div class="prog-dot"></div>
+            <div class="prog-dot"></div>
+          </div>
+        </div>
+        <div class="card-body" id="shop-list"></div>
+        <div style="padding:0 14px 14px">
+          <button class="add-btn" onclick="addShop()">＋ 店舗を追加</button>
+        </div>
+      </div>
+
+      <!-- サマリー（購入店舗リスト直下・ボーナス倍率より上） -->
+      <div class="slbl">獲得予定ポイント</div>
+      <div class="summary-grid card" style="margin:0 12px 10px">
+        <div class="scell">
+          <div class="slb">購入合計</div>
+          <div class="sval"><span id="sv-total">0</span><span class="sunit">円</span></div>
+        </div>
+        <div class="scell highlight">
+          <div class="slb">買いまわりポイント</div>
+          <div class="sval"><span id="sv-marathon">0</span><span class="sunit">pt</span></div>
+          <div class="ss" id="msub">上限 7,000pt</div>
+        </div>
+        <div class="scell">
+          <div class="slb">通常ポイント</div>
+          <div class="sval"><span id="sv-normal">0</span><span class="sunit">pt</span></div>
+          <div class="ss">基本1倍分</div>
+        </div>
+        <div class="scell highlight">
+          <div class="slb">合計獲得予定</div>
+          <div class="sval"><span id="sv-total-pt">0</span><span class="sunit">pt</span></div>
+        </div>
+      </div>
+      <div id="cap-warn" class="cap-warn"></div>
+      <div id="cap-ok" class="cap-ok"></div>
+
+      <!-- ボーナス倍率 -->
+      <div class="card">
+        <div class="ch"><div class="ch-t">ボーナス倍率</div></div>
+        <div class="card-body">
+          <div class="bonus-row">
+            <div style="flex:1"><div class="bn">楽天カード</div><div class="bd2">楽天カードで支払い</div></div>
+            <a class="blink" href="https://a.r10.to/hYjkec" target="_blank" rel="noopener">申し込む</a>
+            <div class="brate">+1倍</div>
+            <label class="bonus-toggle"><input type="checkbox" id="card-cb" onchange="updateCalc()"><span class="bonus-slider"></span></label>
+          </div>
+          <div class="bonus-row">
+            <div style="flex:1"><div class="bn">5と0のつく日</div><div class="bd2">エントリーで+1倍</div></div>
+            <a class="blink" href="https://a.r10.to/hP7Z6F" target="_blank" rel="noopener" target="_blank" rel="noopener">エントリー</a>
+            <div class="brate">+1倍</div>
+            <label class="bonus-toggle"><input type="checkbox" id="goten-cb" onchange="updateCalc()"><span class="bonus-slider"></span></label>
+          </div>
+          <div class="bonus-row">
+            <div style="flex:1"><div class="bn">買ったら倍</div><div class="bd2">事前エントリー必要</div></div>
+            <a class="blink" href="https://a.r10.to/h52dHK" target="_blank" rel="noopener" target="_blank" rel="noopener">エントリー</a>
+            <div class="kattara-btns">
+              <button class="kbtn active" id="k0" onclick="setKattara(0)">なし</button>
+              <button class="kbtn" id="k1" onclick="setKattara(1)">+1倍</button>
+              <button class="kbtn" id="k2" onclick="setKattara(2)">+2倍</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 楽天カードバナー（淡い赤） -->
+      <div class="inline-banner">
+        <div class="ib-icon">💳</div>
+        <div class="ib-body">
+          <div class="ib-ttl">楽天カードで +1倍 ゲット</div>
+          <div class="ib-desc">年会費永年無料。新規入会で大量ポイントプレゼント中。</div>
+          <a href="https://a.r10.to/hYjkec" target="_blank" rel="noopener" class="ib-btn">詳細を見る →</a>
+        </div>
+      </div>
+
+      <div class="slbl">おすすめ店舗</div>
+      <div class="card"><div class="card-body">
+        <div class="rec-shop"><div class="rec-icon">📚</div><div><div class="snm">楽天ブックス</div><div class="sds">ショップ買いまわり対象。pt2倍キャンペーンも開催中！</div><a href="https://a.r10.to/h5AJJQ" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;background:#e8291a;color:#fff;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600;text-decoration:none;">ショップを見る</a></div></div>
+        <div class="rec-shop"><div class="rec-icon">📖</div><div><div class="snm">楽天kobo</div><div class="sds">ショップ買いまわり対象。セールも同時開催中。</div><a href="https://a.r10.to/hgrybN" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;background:#e8291a;color:#fff;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600;text-decoration:none;">ショップを見る</a></div></div>
+        <div class="rec-shop"><div class="rec-icon">🏷️</div><div><div class="snm">楽天スーパーDEAL</div><div class="sds">購入金額の一部がポイントで還元される特別商品。対象商品を購入するだけでポイント高還元。</div><a href="https://a.r10.to/h5RZ5K" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;background:#e8291a;color:#fff;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600;text-decoration:none;">ショップを見る</a></div></div>
+        <div class="rec-shop"><div class="rec-icon">🎫</div><div><div class="snm">楽券</div><div class="sds">レストラン・カフェなどお店のチケットの購入でも買いまわりの対象。<br>サーティワン・コメダ珈琲店・吉野家・コンビニなど</div><a href="https://a.r10.to/h5AE4h" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;background:#e8291a;color:#fff;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600;text-decoration:none;">ショップを見る</a></div></div>
+      </div></div>
+    </div>
+
+    <!-- GUIDE -->
+    <div id="page-guide" class="page">
+      <div class="ph"><h1>攻略ガイド</h1><small id="guide-subtitle">お買い物マラソン完全攻略</small></div>
+       <div class="eb-note">※ 広告リンクを含みます</div>
+      <div class="gh">
+        <div class="gh-lbl">STRATEGY GUIDE</div>
+        <div class="gh-ttl">10店舗・最大倍率を<br>効率よく達成する方法</div>
+        <div class="gh-desc">正しい戦略でポイントを最大化しましょう。</div>
+      </div>
+      <div class="slbl">基本ルール</div>
+      <div class="card"><div class="card-body">
+        <div class="tip"><div class="gtt">エントリーを忘れずに</div><div class="gtd">マラソン開始後、必ずエントリーページでボタンを押す必要があります。エントリーなしでは追加ポイントが付与されません。開催のたびに必要です。</div><a href="#" id="guide-entry-link" class="gttag-link">エントリーする →</a></div>
+        <div class="tip"><div class="gtt">1店舗ごとに1,000円以上が条件</div><div class="gtd">1店舗とカウントされるには、同一ショップで税込1,000円以上の購入が必要です。999円以下はカウントされません。</div></div>
+        <div class="tip"><div class="gtt">買いまわりポイントの上限は7,000pt</div><div class="gtd">お買い物マラソンの追加ポイントには7,000ptの上限があります。計算ツールで事前に確認して、無駄なく使い切りましょう。</div></div>
+        <div class="tip"><div class="gtt">クーポン割引に注意</div><div class="gtd">クーポン適用後の金額が999円以下だと買いまわりの対象外になります。</div></div>
+        <div class="tip"><div class="gtt">ポイントは税抜き価格対象</div><div class="gtd">ショップ買いまわりは1,000円（税込）以上のショップ数でカウントされますが、楽天市場のポイントは税抜き価格に対して付与されます。</div></div>
+      </div></div>
+      <div class="slbl">効率化テクニック</div>
+      <div class="card"><div class="card-body">
+        <div class="tip"><div class="gtt">同時開催キャンペーン</div><div class="gtd">「お得情報」を要チェック！楽天ママ割や学割など、同時に開催されるキャンペーンもエントリーでさらにポイントアップ＆割引が受けられます。</div></div>
+        <div class="tip"><div class="gtt">1,000円ポッキリ商品</div><div class="gtd">楽天市場では買いまわり用に送料無料1,000円商品が多くあります。買いまわり店舗数が1店舗増えるだけで1,000ポイント以上増える場合もあるので、計算ツールを活用して1,000円ポッキリ商品を追加してみてください。</div></div>
+        <div class="tip"><div class="gtt">5と0のつく日に買い物</div><div class="gtd">ショップ買い中は5と0のつく日と重なる日があります。その日に楽天カードでお買い物することで＋1倍が付与されます。</div></div>
+        <div class="tip"><div class="gtt">勝ったら倍の開催をチェック</div><div class="gtd">楽天市場では勝ったら倍キャンペーンが不定期で開催されます。事前エントリーが必要なのでお買い物前にチェックしておきましょう。</div></div>
+      </div></div>
+      <div class="slbl">よくある質問</div>
+      <div class="card"><div class="card-body">
+        <div class="faq-item"><div class="faq-q">Q. 同じショップで複数回購入したら？</div><div class="faq-a">同一ショップでの複数回購入は1店舗としてカウントされます。金額は合算されてポイント計算されますが、店舗数のカウントは増えません。</div></div>
+        <div class="faq-item"><div class="faq-q">Q. ポイントはいつ付与される？</div><div class="faq-a">マラソンのボーナスポイントは、購入月の翌々月15日前後に付与されます。</div></div>
+        <div class="faq-item"><div class="faq-q">Q. キャンセルしたらポイントはどうなる？</div><div class="faq-a">キャンセルした注文は店舗数のカウントから除外されます。キャンセルによって店舗数が変わると、獲得ポイントも変わる可能性があります。</div></div>
+        <div class="faq-item"><div class="faq-q">Q. ショップ買いまわりはいつ開催？</div><div class="faq-a">不定期開催で月1〜2回、数日間開催されることが多いです。カレンダータブで年間の開催予定を確認できます。</div></div>
+      </div></div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div id="page-calendar" class="page">
+      <div class="ph"><h1>イベントカレンダー</h1><small>楽天イベント予定</small></div>
+      <div class="eb-note">※ 広告リンクを含みます</div>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+        <div class="cal-month" id="cal-month-label"></div>
+        <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+      </div>
+      <div class="cal-legend">
+        <div class="cli marathon">買いまわり</div>
+        <div class="cli super">セール・ポイントUP</div>
+        <div class="cli point">ポイントUP</div>
+      </div>
+      <div class="cdow"><div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div></div>
+      <div id="cal-grid"></div>
+      <div class="slbl">今月のイベント</div>
+      <div class="card cal-events-list" id="cal-events-list"></div>
+      <div class="cal-note">⚠️ 日程は例年の傾向をもとにした目安です。実際の開催日は楽天市場の公式サイトでご確認ください。</div>
+    </div>
+
+    <!-- TOKUTOKU -->
+    <div id="page-tokutoku" class="page">
+      <div class="ph"><h1>お得情報</h1><small>楽天ポイントアップ・クーポン</small></div>
+      <div class="eb-note">※ 広告リンクを含みます</div>
+        <div class="slbl">ポイントアップ</div>
+      <div class="card"><div class="card-body" id="tokutoku-warivari"></div></div>
+      <div class="slbl">クーポン・割引</div>
+      <div class="card"><div class="card-body" id="tokutoku-coupons"></div></div>
+      <div class="mini-about">
+        <div class="mttl">買いまわり計算</div>
+        <div class="mlinks">
+          <a href="https://a.r10.to/hYRDPI" target="_blank" rel="noopener">楽天市場</a>
+        </div>
+        <div class="mmeta">
+  <a href="privacy.html" style="color:var(--blue);text-decoration:none;font-size:12px;">プライバシーポリシー</a>
+</div>
+        <button class="mbtn" onclick="showInstall()">📱 ホーム画面に追加</button>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+
+  <nav id="bottom-nav">
+<button class="nav-item active" id="nav-calc" onclick="switchPage('calc')"><div class="ni-icon"><i class="fa-solid fa-calculator"></i></div><div class="ni-lbl">計算</div></button>
+<button class="nav-item" id="nav-guide" onclick="switchPage('guide')"><div class="ni-icon"><i class="fa-solid fa-book"></i></div><div class="ni-lbl">攻略</div></button>
+<button class="nav-item" id="nav-calendar" onclick="switchPage('calendar')"><div class="ni-icon"><i class="fa-solid fa-calendar"></i></div><div class="ni-lbl">カレンダー</div></button>
+<button class="nav-item" id="nav-tokutoku" onclick="switchPage('tokutoku')"><div class="ni-icon"><i class="fa-solid fa-bullhorn"></i></div><div class="ni-lbl">お得情報</div></button>
+  </nav>
+</div>
+
+<div id="installOverlay">
+  <div class="install-sheet">
+    <h2>📱 ホーム画面に追加</h2>
+    <p style="font-size:13px;color:#6b6560;margin-bottom:16px;">
+      アプリのようにすばやく起動できます。
+    </p>
+
+    <!-- タブ -->
+    <div style="display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #e8e4dc;">
+      <button id="tab-ios" onclick="switchTab('ios')" style="
+        flex:1;padding:8px;font-size:14px;font-weight:700;
+        border:none;background:transparent;cursor:pointer;
+        color:#e8291a;border-bottom:2px solid #e8291a;margin-bottom:-2px;
+      ">iPhone</button>
+      <button id="tab-android" onclick="switchTab('android')" style="
+        flex:1;padding:8px;font-size:14px;font-weight:700;
+        border:none;background:transparent;cursor:pointer;
+        color:#9e9890;border-bottom:2px solid transparent;margin-bottom:-2px;
+      ">Android</button>
+    </div>
+
+    <!-- iPhoneの手順 -->
+    <div id="content-ios">
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="
+            width:24px;height:24px;border-radius:50%;background:#e8291a;
+            color:#fff;font-size:12px;font-weight:700;
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+          ">1</div>
+          <div style="font-size:13px;padding-top:3px;">Safariでこのページを開く</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="
+            width:24px;height:24px;border-radius:50%;background:#e8291a;
+            color:#fff;font-size:12px;font-weight:700;
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+          ">2</div>
+          <div style="font-size:13px;padding-top:3px;">画面下部の共有ボタン（<i class="fa-solid fa-arrow-up-from-bracket"></i>）をタップ）をタップ</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="
+            width:24px;height:24px;border-radius:50%;background:#e8291a;
+            color:#fff;font-size:12px;font-weight:700;
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+          ">3</div>
+          <div style="font-size:13px;padding-top:3px;">「ホーム画面に追加」をタップ</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="
+            width:24px;height:24px;border-radius:50%;background:#e8291a;
+            color:#fff;font-size:12px;font-weight:700;
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+          ">4</div>
+          <div style="font-size:13px;padding-top:3px;">「追加」をタップして完了</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Androidの手順 -->
+    <div id="content-android" style="display:none;">
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="
+            width:24px;height:24px;border-radius:50%;background:#e8291a;
+            color:#fff;font-size:12px;font-weight:700;
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+          ">1</div>
+          <div style="font-size:13px;padding-top:3px;">Chromeでこのページを開く</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="
+            width:24px;height:24px;border-radius:50%;background:#e8291a;
+            color:#fff;font-size:12px;font-weight:700;
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+          ">2</div>
+          <div style="font-size:13px;padding-top:3px;">右上の「︙」（メニュー）をタップ</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="
+            width:24px;height:24px;border-radius:50%;background:#e8291a;
+            color:#fff;font-size:12px;font-weight:700;
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+          ">3</div>
+          <div style="font-size:13px;padding-top:3px;">「ホーム画面に追加」をタップ→「インストール」を選択</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="
+            width:24px;height:24px;border-radius:50%;background:#e8291a;
+            color:#fff;font-size:12px;font-weight:700;
+            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+          ">4</div>
+          <div style="font-size:13px;padding-top:3px;">「追加」をタップして完了</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="install-close" onclick="hideInstall()">閉じる</button>
+  </div>
+</div>
+
+<script>
+let MARATHON_CAP = 7000;
+let CAL_EVENTS = [];
+
+const _s=localStorage.getItem('shops');
+const _k=parseInt(localStorage.getItem('kattara'))||0;
+let shops=_s?JSON.parse(_s):[{name:'',amt:''}];
+let card=localStorage.getItem('card')==='true';
+let goten=localStorage.getItem('goten')==='true';
+let kattara=_k;
+let taxMode=localStorage.getItem('taxMode')==='true';
+let calYear=2026, calMonth=new Date().getMonth()+1;
+
+function showInstall(){document.getElementById('installOverlay').classList.add('show')}
+function hideInstall(){document.getElementById('installOverlay').classList.remove('show')}
+
+if(!localStorage.getItem('install_guide_shown')){
+  setTimeout(()=>{showInstall();localStorage.setItem('install_guide_shown','1')},1500);
+}
+
+function addShop(){if(shops.length>=20)return;shops.push({name:'',amt:''});renderShops();updateCalc()}
+function removeShop(i){if(shops.length<=1)return;shops.splice(i,1);renderShops();updateCalc()}
+
+function getAmt(s){const v=parseInt(s.amt)||0;return taxMode?Math.floor(v*10/11):v}
+function isTarget(s){return(parseInt(s.amt)||0)>=1000}
+
+function renderShops(){
+  document.getElementById('shop-list').innerHTML=shops.map((s,i)=>`
+    <div class="shop-row">
+      <div class="field-wrap" style="flex:1">
+        <div class="field-lbl">店舗名（任意）</div>
+        <input class="sname" type="text" placeholder="例：楽天ブックス" value="${s.name}" oninput="shops[${i}].name=this.value;updateCalc()">
+      </div>
+      <div class="field-wrap">
+        <div class="field-lbl">購入金額</div>
+        <div class="samt-wrap">
+          <input class="samt" type="text" inputmode="numeric" placeholder="0" value="${s.amt}" oninput="shops[${i}].amt=this.value;updateCalc()">
+          <span class="syen">円</span>
+        </div>
+      </div>
+      ${shops.length>1?`<button class="sdel" onclick="removeShop(${i})">×</button>`:'<div style="width:28px"></div>'}
+    </div>`).join('');
+}
+
+function updateCalc(){
+  card=document.getElementById('card-cb').checked;
+  goten=document.getElementById('goten-cb').checked;
+  taxMode=document.getElementById('tax-cb').checked;
+
+  document.getElementById('badge-tax').style.display=taxMode?'':'none';
+  document.getElementById('badge-card').style.display=card?'':'none';
+  document.getElementById('badge-goten').style.display=goten?'':'none';
+  document.getElementById('badge-k1').style.display=(kattara===1)?'':'none';
+  document.getElementById('badge-k2').style.display=(kattara===2)?'':'none';
+
+  const targets=shops.filter(isTarget);
+  const shopCount=targets.length;
+  const marathonRate=Math.min(9,Math.max(0,shopCount-1));
+  const totalAmt=shops.reduce((a,s)=>a+(parseInt(s.amt)||0),0);
+  const taxAmt=taxMode?Math.floor(totalAmt*10/11):totalAmt;
+  const targetTaxAmt=targets.reduce((a,s)=>a+getAmt(s),0);
+  const rawMarathon=Math.floor(targetTaxAmt*marathonRate/100);
+  const marathonPt=Math.min(MARATHON_CAP,rawMarathon);
+  const normalPt=Math.floor(taxAmt/100);
+  const bonusRate=(card?1:0)+(goten?1:0)+kattara;
+  const bonusPt=Math.floor(taxAmt*bonusRate/100);
+  const totalPt=normalPt+marathonPt+bonusPt;
+
+  document.getElementById('h-rate-val').textContent=1+marathonRate+(card?1:0)+(goten?1:0)+kattara;
+  document.getElementById('h-shops').textContent=shopCount;
+  document.getElementById('sv-total').textContent=totalAmt.toLocaleString();
+  document.getElementById('sv-marathon').textContent=marathonPt.toLocaleString();
+  document.getElementById('sv-normal').textContent=normalPt.toLocaleString();
+  document.getElementById('sv-total-pt').textContent=totalPt.toLocaleString();
+
+  document.querySelectorAll('.prog-dot').forEach((d,i)=>{d.className='prog-dot'+(i<Math.min(shopCount,10)?' done':'')});
+
+  const capWarn=document.getElementById('cap-warn'),capOk=document.getElementById('cap-ok');
+  if(rawMarathon>MARATHON_CAP){
+    capWarn.innerHTML=`⚠️ <b>買いまわりポイント上限超過</b><br>計算値 ${rawMarathon.toLocaleString()}pt → 上限7,000ptを ${(rawMarathon-MARATHON_CAP).toLocaleString()}pt オーバー<br>購入金額を調整して効率化しましょう。`;
+    capWarn.classList.add('show');capOk.classList.remove('show');
+    document.getElementById('msub').textContent='上限到達！';
+  } else if(shopCount>=2){
+    capOk.textContent=`✓ 買いまわりポイントは上限内（あと ${(MARATHON_CAP-marathonPt).toLocaleString()}pt 余裕）`;
+    capOk.classList.add('show');capWarn.classList.remove('show');
+    document.getElementById('msub').textContent='上限 7,000pt';
+  } else {
+  capWarn.classList.remove('show');capOk.classList.remove('show');
+    document.getElementById('msub').textContent='上限 7,000pt';
+  }
+  localStorage.setItem('shops', JSON.stringify(shops));
+  localStorage.setItem('card', card);
+  localStorage.setItem('goten', goten);
+  localStorage.setItem('kattara', kattara);
+  localStorage.setItem('taxMode', taxMode);
+}
+
+function setKattara(v){kattara=v;[0,1,2].forEach(i=>document.getElementById('k'+i).className='kbtn'+(i===v?' active':''));updateCalc()}
+
+function switchPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('nav-'+id).classList.add('active');
+  document.getElementById('pages').scrollTop=0;
+  if(id==='calendar')renderCalendar();
+}
+
+function changeMonth(d){calMonth+=d;if(calMonth>12){calMonth=1;calYear++}if(calMonth<1){calMonth=12;calYear--}renderCalendar()}
+
+function renderCalendar(){
+  const now=new Date();
+  document.getElementById('cal-month-label').textContent=`${calYear}年${calMonth}月`;
+  const firstDay=new Date(calYear,calMonth-1,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth,0).getDate();
+  const daysInPrev=new Date(calYear,calMonth-1,0).getDate();
+  const eventsThisMonth=CAL_EVENTS.filter(e=>e.month===calMonth);
+
+  // カレンダーグリッド用dayMap
+  const dayMap={};
+  eventsThisMonth.forEach(ev=>{
+    for(let d=ev.startDay;d<=ev.endDay;d++){
+      if(!dayMap[d])dayMap[d]=[];
+      if(!dayMap[d].find(e=>e.type===ev.type))dayMap[d].push(ev);
+    }
+  });
+
+  let html='';
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-day other"><span class="cdn">${daysInPrev-firstDay+1+i}</span></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=now.getFullYear()===calYear&&now.getMonth()+1===calMonth&&now.getDate()===d;
+    const dots=(dayMap[d]||[]).map(e=>`<div class="cdot ${e.type}"></div>`).join('');
+    html+=`<div class="cal-day${isToday?' today':''}"><span class="cdn">${d}</span><div class="cdots">${dots}</div></div>`;
+  }
+  const nextDays=(firstDay+daysInMonth)%7===0?0:7-(firstDay+daysInMonth)%7;
+  for(let i=1;i<=nextDays;i++) html+=`<div class="cal-day other"><span class="cdn">${i}</span></div>`;
+  document.getElementById('cal-grid').innerHTML=html;
+
+  // イベントリスト：「5と0のつく日」は1件にまとめ・日付なし
+  const seen=new Set();
+  const listEvents=[];
+  eventsThisMonth
+    .slice()
+    .sort((a,b)=>a.startDay-b.startDay)
+    .forEach(ev=>{
+      if(ev.name==='5と0のつく日'){
+        if(!seen.has('5と0のつく日')){
+          seen.add('5と0のつく日');
+          listEvents.push({...ev, noDate:true});
+        }
+      } else {
+        const k=ev.name+ev.startDay;
+        if(!seen.has(k)){seen.add(k);listEvents.push(ev);}
+      }
+    });
+
+  const list=document.getElementById('cal-events-list');
+  if(!listEvents.length){list.innerHTML='<div style="padding:12px;color:var(--text3);font-size:13px">今月のイベントはありません</div>';return}
+const EV_LINKS={
+    'ワンダフルデー':'https://a.r10.to/hPju3G',
+    '5と0のつく日':'https://a.r10.to/hP7Z6F',
+    'ご愛顧感謝デー':'https://a.r10.to/hPfN7c',
+  };
+  list.innerHTML=listEvents.map(ev=>{
+    const dateStr=ev.noDate?'':ev.startDay===ev.endDay?`${calMonth}月${ev.startDay}日`:`${calMonth}月${ev.startDay}日〜${ev.endDay}日`;
+    const link=EV_LINKS[ev.name]?`<a href="${EV_LINKS[ev.name]}" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;background:var(--red);color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;text-decoration:none;">エントリーする →</a>`:'';
+    return `<div class="ev-item"><div class="ev-dot ${ev.type}"></div><div><div class="ev-name">${ev.name}</div>${dateStr?`<div class="ev-date">${dateStr}</div>`:''}<div class="ev-desc">${ev.desc}</div>${link}</div></div>`;
+  }).join('');
+}
+
+function switchTab(tab){
+  document.getElementById('content-ios').style.display = tab==='ios' ? 'block' : 'none';
+  document.getElementById('content-android').style.display = tab==='android' ? 'block' : 'none';
+  document.getElementById('tab-ios').style.color = tab==='ios' ? '#e8291a' : '#9e9890';
+  document.getElementById('tab-ios').style.borderBottomColor = tab==='ios' ? '#e8291a' : 'transparent';
+  document.getElementById('tab-android').style.color = tab==='android' ? '#e8291a' : '#9e9890';
+  document.getElementById('tab-android').style.borderBottomColor = tab==='android' ? '#e8291a' : 'transparent';
+}
+async function initApp() {
+  // campaign.json を fetch（同じサーバーに置く前提）
+  try {
+    const res = await fetch('campaign.json');
+    const c = await res.json();
+
+    // ── campaign ──
+    const entryUrl = c.campaign.entryUrl;
+
+    // ── rules ──
+    MARATHON_CAP = c.rules.marathonPointCap;
+
+    // ── copy ──
+    document.getElementById('eb-title').textContent = c.copy.entryBanner.title;
+    document.getElementById('eb-sub').textContent   = c.copy.entryBanner.sub;
+    document.getElementById('eb-btn').textContent   = c.copy.entryBanner.btn;
+    document.getElementById('entry-banner-link').href = entryUrl;
+    document.getElementById('guide-entry-link').href  = entryUrl;
+    document.getElementById('guide-subtitle').textContent = c.copy.guideSubtitle;
+
+    // ── calEvents ──
+    CAL_EVENTS = [
+      ...c.calEvents,
+      ...[1,2,3,4,5,6,7,8,9,10,11,12].flatMap(m =>
+        [5,10,15,20,25,30].map(d => ({
+          month:m, startDay:d, endDay:d, type:'point',
+          name:'5と0のつく日', desc:'楽天カード決済でポイント＋1倍。'
+        }))
+      ),
+    ];
+
+    // ── tokutoku: ポイントアップカード ──
+    const iconMap = { mama:'👶', mycar:'🚗', pet:'🐾', drink:'💧', alcohol:'🍺' };
+    function buildTokCard(item) {
+  if(item.hidden) return '';
+      const tags  = item.tags.map(t => `<span class="stag${t==='登録無料'||t==='クーポン'?' r':''}">${t}</span>`).join('');
+      const notice= item.notice
+        ? `<div style="background:#fff8e1;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:14px;color:#7a5c00;">
+             <i class="fa-solid fa-bullhorn"></i> ${item.notice.replace(/\n/g,'<br>')}
+           </div>`
+        : '';
+      return `<div class="tok-card">
+        <div class="tok-icon">${item.icon || iconMap[item.id] || '🎁'}</div>
+        <div>
+          <div class="tnm">${item.name}</div>
+          <div class="tds">${item.desc}</div>
+          <div class="stags">${tags}</div>
+          ${notice}
+          <a href="${item.url}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;background:#e8291a;color:#fff;border-radius:20px;padding:8px 20px;font-size:14px;font-weight:600;text-decoration:none;">${item.btn}</a>
+        </div>
+      </div>`;
+    }
+    document.getElementById('tokutoku-warivari').innerHTML =
+      c.tokutoku.warivari.map(buildTokCard).join('');
+    document.getElementById('tokutoku-coupons').innerHTML  =
+      c.tokutoku.coupons.map(buildTokCard).join('');
+
+  } catch(e) {
+    // fetch失敗時はフォールバック表示
+    console.warn('campaign.json の読み込みに失敗しました', e);
+    document.getElementById('eb-title').textContent = 'エントリーはこちら！';
+    document.getElementById('eb-sub').textContent   = 'エントリーしないとポイント加算されません';
+    document.getElementById('eb-btn').textContent   = '今すぐエントリーする →';
+    CAL_EVENTS = [];
+  }
+
+  // 通常の初期化
+  renderShops(); updateCalc(); renderCalendar();
+  document.getElementById('card-cb').checked  = card;
+  document.getElementById('goten-cb').checked = goten;
+  document.getElementById('tax-cb').checked   = taxMode;
+  setKattara(kattara);
+  document.getElementById('tax-cb').addEventListener('change', () => {
+    taxMode = document.getElementById('tax-cb').checked;
+    renderShops(); updateCalc();
+  });
+}
+
+initApp();
+</script>
+</body>
+</html>

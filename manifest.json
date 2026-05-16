@@ -1,0 +1,30 @@
+{
+  "name": "ショップ買いまわり ポイント計算",
+  "short_name": "買いまわり計算",
+  "description": "楽天ショップ買いまわりのポイント倍率を簡単計算",
+  "start_url": "/point-calc/",
+  "display": "standalone",
+  "background_color": "#e8291a",
+  "theme_color": "#1a1714",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

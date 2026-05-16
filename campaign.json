@@ -1,0 +1,167 @@
+{
+  "campaign": {
+    "type": "marathon",
+    "name": "お買い物マラソン",
+    "entryUrl": "https://a.r10.to/hPf1HD"
+  },
+
+  "rules": {
+    "marathonPointCap": 7000,
+    "maxShops": 20,
+    "maxRateBonus": 9
+  },
+
+  "copy": {
+    "entryBanner": {
+      "title": "お買い物マラソン エントリーはこちら！",
+      "sub": "エントリーしないとポイント加算されません",
+      "btn": "今すぐエントリーする →"
+    },
+    "guideSubtitle": "お買い物マラソン完全攻略"
+  },
+
+  "links": {
+    "rakutenCard": "https://a.r10.to/hYjkec",
+    "rakutenMarket": "https://a.r10.to/hYRDPI",
+    "goWithPointsEntry": "https://ここに5と0のつく日エントリーURLを入れる",
+    "kattaraDoubleEntry": "https://ここに買ったら倍エントリーURLを入れる"
+  },
+
+  "tokutoku": {
+    "warivari": [
+      {
+        "id": "mama",
+        "hidden": false,
+        "icon": "👶",
+        "name": "楽天ママ割",
+        "desc": "無料で誰でも登録できるサービス（ママ以外もOK）。対象商品が特別価格に。サンプルボックスのプレゼントも。",
+        "tags": ["登録無料", "ポイントアップ", "サンプル"],
+        "notice": "",
+        "notice_draft": "ポイント＋1倍キャンペーン開催中！\nベビー・キッズ用品がポイントUP",
+        "btn": "今すぐエントリーする→",
+        "url": "https://a.r10.to/hk718h"
+      },
+      {
+        "id": "mycar",
+        "hidden": false,
+        "icon": "🚗",
+        "name": "楽天マイカー割",
+        "desc": "車関連商品（タイヤ・カー用品・カーナビなど）がポイントアップ。車検・保険もお得に。",
+        "tags": ["登録無料", "ポイントアップ"],
+        "notice": "",
+        "notice_draft": "ポイント最大5倍キャンペーン開催中！\n車・バイクアイテムがお得",
+        "btn": "今すぐエントリーする→",
+        "url": "https://a.r10.to/hkNBrM"
+      },
+      {
+        "id": "pet",
+        "hidden": false,
+        "icon": "🐾",
+        "name": "楽天ペット割",
+        "desc": "ペット用品・ペットフードがポイントアップ。ペット保険や情報コンテンツもサポート。",
+        "tags": ["登録無料", "ポイントアップ"],
+        "notice": "",
+        "notice_draft": "ポイント＋1倍キャンペーン開催中！\nペット用品がポイントUP",
+        "btn": "今すぐエントリーする→",
+        "url": "https://a.r10.to/hRgYc1"
+      },
+      {
+       "id": "car",
+        "hidden": true,
+        "icon": "🚗",
+        "name": "楽天Carタイヤ交換チケット",
+        "desc": "タイヤと楽天Carタイヤ交換チケット同時購入で、希望の取付店に直送＆交換サービス。",
+        "tags": ["誰でも", "ポイントアップ"],
+        "notice": "ポイント10倍キャンペーン開催中！",
+        "notice_draft": "",
+        "btn": "今すぐエントリーする→",
+        "url": "https://a.r10.to/hPhMLS"
+      }
+    ],
+    "coupons": [
+      {
+        "id": "drink",
+        "hidden": true,
+        "icon": "💧",
+        "name": "水・ソフトドリンククーポン",
+        "desc": "水・お茶・ジュースなどソフトドリンク対象。",
+        "tags": ["クーポン", "対象アイテム限定"],
+        "notice": "1注文あたり最低お買い物金額なし。\n先着10,000回",
+        "btn": "7%OFFクーポン→",
+        "url": "https://a.r10.to/hkIAGn"
+      },
+      {
+        "id": "alcohol",
+        "hidden": true,
+        "icon": "🍺",
+        "name": "ビール・洋酒クーポン",
+        "desc": "ビール・ワイン・ウイスキーなどのお酒対象。",
+        "tags": ["クーポン", "対象アイテム限定"],
+        "notice": "1注文あたり最低お買い物金額なし。\n先着100回",
+        "btn": "7%OFFクーポン→",
+        "url": "https://a.r10.to/hXOANj"
+      },
+      {
+        "id": "sweetsgourmet",
+        "hidden": false,
+        "icon": "🍰",
+        "name": "スイーツ＆グルメクーポン",
+        "desc": "スイーツ・ドリンクなどのギフト、レトルト・総菜などのグルメ商品対象。",
+        "tags": ["クーポン", "対象アイテム限定"],
+        "notice": "1注文あたり2,980円以上。\n先着10,000回",
+        "btn": "500円OFFクーポン→",
+        "url": "https://a.r10.to/hPGd7d"
+      }
+    ]
+  },
+
+  "calEvents": [
+    { "month":1,  "startDay":1,  "endDay":3,  "type":"super",    "name":"超ポイントバック祭",  "desc":"新春初売りセール。合計購入金額に応じたポイント倍率。" },
+    { "month":1,  "startDay":9,  "endDay":13, "type":"marathon", "name":"お買い物マラソン",    "desc":"年明け最初のマラソン。" },
+    { "month":1,  "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。" },
+    { "month":2,  "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
+    { "month":2,  "startDay":4,  "endDay":10, "type":"marathon", "name":"お買い物マラソン",    "desc":"バレンタイン前後に開催。ギフト購入に最適。" },
+    { "month":2,  "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。" },
+    { "month":2,  "startDay":19, "endDay":23, "type":"marathon", "name":"お買い物マラソン",    "desc":"ホワイトデーやひな祭りのアイテムがお得に買えるチャンス。" },
+    { "month":3,  "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
+    { "month":3,  "startDay":4,  "endDay":11, "type":"super",    "name":"楽天スーパーSALE",   "desc":"年4回の大型セール。半額商品・激安クーポンが多数。" },
+    { "month":3,  "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。ダイヤモンド会員ほど恩恵大。" },
+    { "month":3,  "startDay":21, "endDay":27, "type":"marathon", "name":"お買い物マラソン",    "desc":"新生活や入学・入園アイテムがお得に買えるチャンス。" },
+    { "month":4,  "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
+    { "month":4,  "startDay":4,  "endDay":10, "type":"marathon", "name":"お買い物マラソン",    "desc":"母の日ギフトがお得に買えるチャンス。" },
+    { "month":4,  "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。" },
+    { "month":4,  "startDay":24, "endDay":27, "type":"marathon", "name":"お買い物マラソン",    "desc":"GW前の買い溜めに。まとめ買い・日用品の購入に最適。" },
+    { "month":5,  "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
+    { "month":5,  "startDay":9,  "endDay":16, "type":"marathon", "name":"お買い物マラソン",    "desc":"父の日ギフトがお得に買えるチャンス。" },
+    { "month":5,  "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。" },
+    { "month":5,  "startDay":23, "endDay":27, "type":"marathon", "name":"お買い物マラソン",    "desc":"父の日ギフトや梅雨アイテムがお得に買えるチャンス。" },
+    { "month":6,  "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
+    { "month":6,  "startDay":4,  "endDay":11, "type":"super",    "name":"楽天スーパーSALE",   "desc":"年4回の大型セール。半額商品・激安クーポンが多数。" },
+    { "month":6,  "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。" },
+    { "month":6,  "startDay":22, "endDay":27, "type":"marathon", "name":"お買い物マラソン",    "desc":"夏物の先買いでお得に買えるチャンス。" },
+    { "month":7,  "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
+    { "month":7,  "startDay":4,  "endDay":11, "type":"marathon", "name":"お買い物マラソン",    "desc":"お中元ギフトがお得に買えるチャンス。" },
+    { "month":7,  "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。" },
+    { "month":7,  "startDay":19, "endDay":26, "type":"marathon", "name":"お買い物マラソン",    "desc":"夏のファッションアイテムや冷感グッズがお得。" },
+    { "month":8,  "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
+    { "month":8,  "startDay":4,  "endDay":11, "type":"marathon", "name":"お買い物マラソン",    "desc":"夏休み旅行グッズやアウトドア用品がお得。" },
+    { "month":8,  "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。" },
+    { "month":8,  "startDay":24, "endDay":27, "type":"marathon", "name":"お買い物マラソン",    "desc":"秋物の先買いでお得に買えるチャンス。" },
+    { "month":9,  "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
+    { "month":9,  "startDay":4,  "endDay":11, "type":"super",    "name":"楽天スーパーSALE",   "desc":"年4回の大型セール。半額商品・激安クーポンが多数。" },
+    { "month":9,  "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。" },
+    { "month":9,  "startDay":19, "endDay":24, "type":"marathon", "name":"お買い物マラソン",    "desc":"衣替えや模様替えアイテムがお得に買えるチャンス。" },
+    { "month":10, "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
+    { "month":10, "startDay":4,  "endDay":9,  "type":"marathon", "name":"お買い物マラソン",    "desc":"秋のグルメ特集で食品アイテムがお得。" },
+    { "month":10, "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。" },
+    { "month":10, "startDay":24, "endDay":27, "type":"marathon", "name":"お買い物マラソン",    "desc":"秋のお出かけグッズやハロウィングッズがお得。" },
+    { "month":11, "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
+    { "month":11, "startDay":4,  "endDay":11, "type":"marathon", "name":"お買い物マラソン",    "desc":"コートや羽毛布団など防寒アイテムをお得に買うチャンス。" },
+    { "month":11, "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。ダイヤモンド会員ほど恩恵大。" },
+    { "month":11, "startDay":20, "endDay":27, "type":"super",    "name":"ブラックフライデー",  "desc":"96（クロ）にちなんだクーポンなど大型セール。" },
+    { "month":12, "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
+    { "month":12, "startDay":4,  "endDay":11, "type":"super",    "name":"楽天スーパーSALE",   "desc":"年4回の大型セール。半額商品・激安クーポンが多数。" },
+    { "month":12, "startDay":18, "endDay":18, "type":"super",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。" },
+    { "month":12, "startDay":19, "endDay":26, "type":"super",    "name":"楽天大感謝祭",        "desc":"年内最終セール。おせちやギフトをお得に買うチャンス。" }
+  ]
+}

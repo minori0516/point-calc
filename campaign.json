@@ -111,6 +111,17 @@
         "notice": "1注文あたり2,980円以上。\n先着10,000回",
         "btn": "500円OFFクーポン→",
         "url": "https://a.r10.to/hPGd7d"
+      },
+      {
+        "id": "fashion",
+        "hidden": false,
+        "icon": "👕",
+        "name": "FASHION SPECIAL FAIR",
+        "desc": "ファッション関連20%から500円OFFまで5種類のクーポンが配布中。",
+        "tags": ["クーポン", "対象ショップ限定"],
+        "notice": "お1人様何回（1注文1回）でも利用可能",
+        "btn": "20％OFFクーポン→",
+        "url": "https://a.r10.to/h5LlKY"
       }
     ]
   },

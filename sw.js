@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rakuten-marathon-v3';
+const CACHE_NAME = 'rakuten-marathon-v4';
 const ASSETS = [
   '/point-calc/',
   '/point-calc/index.html',
@@ -28,6 +28,11 @@ self.addEventListener('activate', event => {
 
 // キャッシュ優先・ネットワークフォールバック
 self.addEventListener('fetch', event => {
+  // campaign.jsonは常にネットワークから取得
+  if(event.request.url.includes('campaign.json')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
   event.respondWith(
     caches.match(event.request).then(cached => {
       return cached || fetch(event.request);

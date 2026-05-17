@@ -6,7 +6,7 @@
   },
 
   "rules": {
-    "marathonPointCap": 7000,
+    "marathonPointCap":10000,
     "maxShops": 20,
     "maxRateBonus": 9
   },

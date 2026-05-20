@@ -145,6 +145,7 @@
     { "month":5,  "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
     { "month":5,  "startDay":9,  "endDay":16, "type":"marathon", "name":"お買い物マラソン",    "desc":"父の日ギフトがお得に買えるチャンス。" },
     { "month":5,  "startDay":18, "endDay":18, "type":"point",    "name":"ご愛顧感謝デー",      "desc":"ランクに応じて最大ポイント4倍。" },
+    { "month":5,  "startDay":19, "endDay":20, "type":"super",    "name":"超ポイントバック祭",  "desc":"ポイント最大6倍！合計購入金額に応じたポイント倍率。", "url": "https://a.r10.to/hkZy5V"  },
     { "month":5,  "startDay":23, "endDay":27, "type":"marathon", "name":"お買い物マラソン",    "desc":"父の日ギフトや梅雨アイテムがお得に買えるチャンス。" },
     { "month":6,  "startDay":1,  "endDay":1,  "type":"point",    "name":"ワンダフルデー",      "desc":"全ショップポイント3倍＆リピート購入2倍。1,000円OFFクーポンあり。" },
     { "month":6,  "startDay":4,  "endDay":11, "type":"super",    "name":"楽天スーパーSALE",   "desc":"年4回の大型セール。半額商品・激安クーポンが多数。" },

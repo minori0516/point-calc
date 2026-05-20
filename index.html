@@ -700,7 +700,8 @@ const EV_LINKS={
   };
   list.innerHTML=listEvents.map(ev=>{
     const dateStr=ev.noDate?'':ev.startDay===ev.endDay?`${calMonth}月${ev.startDay}日`:`${calMonth}月${ev.startDay}日〜${ev.endDay}日`;
-    const link=EV_LINKS[ev.name]?`<a href="${EV_LINKS[ev.name]}" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;background:var(--red);color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;text-decoration:none;">エントリーする →</a>`:'';
+   const linkUrl=EV_LINKS[ev.name]||(ev.url&&ev.url!=='#'?ev.url:null);
+   const link=linkUrl?`<a href="${linkUrl}" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;background:var(--red);color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;text-decoration:none;">エントリーする →</a>`:'';
     return `<div class="ev-item"><div class="ev-dot ${ev.type}"></div><div><div class="ev-name">${ev.name}</div>${dateStr?`<div class="ev-date">${dateStr}</div>`:''}<div class="ev-desc">${ev.desc}</div>${link}</div></div>`;
   }).join('');
 }

@@ -31,7 +31,7 @@
     "warivari": [
       {
         "id": "mama",
-        "hidden": false,
+        "hidden": true,
         "icon": "👶",
         "name": "楽天ママ割",
         "desc": "無料で誰でも登録できるサービス（ママ以外もOK）。対象商品が特別価格に。サンプルボックスのプレゼントも。",
@@ -44,18 +44,30 @@
       {
         "id": "mycar",
         "hidden": false,
+        "icon": "🏫",
+        "name": "楽天学割",
+        "desc": "15～25歳ならだれでも登録可能。ポイント・限定クーポン・プレゼントでお得に。",
+        "tags": ["登録無料", "ポイントアップ"],
+        "notice": "ポイント2倍キャンペーン開催中！\n全ショップが対象",
+        "notice_draft": "",
+        "btn": "今すぐエントリーする→",
+        "url": "https://a.r10.to/hgE5OU"
+      },
+      {
+        "id": "mycar",
+        "hidden": false,
         "icon": "🚗",
         "name": "楽天マイカー割",
         "desc": "車関連商品（タイヤ・カー用品・カーナビなど）がポイントアップ。車検・保険もお得に。",
         "tags": ["登録無料", "ポイントアップ"],
-        "notice": "",
-        "notice_draft": "ポイント最大5倍キャンペーン開催中！\n車・バイクアイテムがお得",
+        "notice": "ポイント最大5倍キャンペーン開催中！\n車・バイクアイテムがお得",
+        "notice_draft": "",
         "btn": "今すぐエントリーする→",
         "url": "https://a.r10.to/hkNBrM"
       },
       {
         "id": "pet",
-        "hidden": false,
+        "hidden": true,
         "icon": "🐾",
         "name": "楽天ペット割",
         "desc": "ペット用品・ペットフードがポイントアップ。ペット保険や情報コンテンツもサポート。",
@@ -76,9 +88,42 @@
         "notice_draft": "",
         "btn": "今すぐエントリーする→",
         "url": "https://a.r10.to/hPhMLS"
+      },
+      {
+        "id": "drink",
+        "hidden": false,
+        "icon": "💧",
+        "name": "水・ソフトドリンク",
+        "desc": "水・お茶・ジュースなどソフトドリンク対象。",
+        "tags": ["ポイントアップ", "対象アイテム限定"],
+        "notice": "特典ポイント＋9倍または＋11倍\n1000ptまで",
+        "btn": "今すぐエントリーする→",
+        "url": "https://a.r10.to/hP0wUK"
+      },
+      {
+        "id": "necessities",
+        "hidden": false,
+        "icon": "🧽",
+        "name": "日用品・ペット用品5倍",
+        "desc": "日用品・ペット用品を購入でポイント5倍",
+        "tags": ["ポイントアップ", "対象アイテム限定"],
+        "notice": "事前エントリー必須\n300ptまで",
+        "btn": "今すぐエントリーする→",
+        "url": "https://a.r10.to/h50F2U"
       }
     ],
     "coupons": [
+        {
+        "id": "limited",
+        "hidden": false,
+        "icon": "🎫",
+        "name": "スタート2時間限定",
+        "desc": "5月23日20時から利用開始。",
+        "tags": ["クーポン", "対象ショップ限定"],
+        "notice": "枚数限定・先着順などのクーポンも！",
+        "btn": "最大50%OFFクーポン→",
+        "url": "https://a.r10.to/h5UjGB"
+      },
       {
         "id": "drink",
         "hidden": true,
@@ -87,19 +132,19 @@
         "desc": "水・お茶・ジュースなどソフトドリンク対象。",
         "tags": ["クーポン", "対象アイテム限定"],
         "notice": "1注文あたり最低お買い物金額なし。\n先着10,000回",
-        "btn": "7%OFFクーポン→",
-        "url": "https://a.r10.to/hkIAGn"
+        "btn": "今すぐエントリーする→",
+        "url": "https://a.r10.to/hP0wUK"
       },
       {
         "id": "alcohol",
-        "hidden": true,
+        "hidden": false,
         "icon": "🍺",
         "name": "ビール・洋酒クーポン",
         "desc": "ビール・ワイン・ウイスキーなどのお酒対象。",
         "tags": ["クーポン", "対象アイテム限定"],
-        "notice": "1注文あたり最低お買い物金額なし。\n先着100回",
+        "notice": "1注文あたり最低お買い物金額なし。\n先着300回",
         "btn": "7%OFFクーポン→",
-        "url": "https://a.r10.to/hXOANj"
+        "url": "https://a.r10.to/hRWkMM"
       },
       {
         "id": "sweetsgourmet",
@@ -114,7 +159,7 @@
       },
       {
         "id": "fashion",
-        "hidden": false,
+        "hidden": true,
         "icon": "👕",
         "name": "FASHION SPECIAL FAIR",
         "desc": "ファッション関連20%から500円OFFまで5種類のクーポンが配布中。",

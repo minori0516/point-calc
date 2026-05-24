@@ -108,6 +108,10 @@ html,body{height:100%;background:var(--bg);font-family:var(--sans);color:var(--t
 .kattara-btns{display:flex;gap:4px}
 .kbtn{border:1px solid var(--border);border-radius:6px;padding:4px 9px;font-size:12px;background:var(--surface2);color:var(--text2);cursor:pointer;font-family:var(--sans);transition:all .15s}
 .kbtn.active{background:var(--red);color:#fff;border-color:var(--red)}
+.sup-input{width:56px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 8px;font-size:13px;font-family:var(--mono);text-align:right;background:var(--surface2);color:var(--text);outline:none;transition:border-color .2s;-moz-appearance:textfield}
+.sup-input::-webkit-outer-spin-button,.sup-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.sup-input:focus{border-color:var(--red)}
+.sup-unit{font-size:12px;color:var(--text2);margin-left:2px}
 
 /* Inline banner — 淡い赤 */
 .inline-banner{background:linear-gradient(135deg,#fff1f0 0%,#ffe4e2 100%);border:1px solid #ffd5d2;border-radius:var(--radius);margin:0 12px 10px;padding:16px;display:flex;align-items:center;gap:12px}
@@ -291,9 +295,9 @@ html,body{height:100%;background:var(--bg);font-family:var(--sans);color:var(--t
           <div class="ss" id="msub">上限 7,000pt</div>
         </div>
         <div class="scell">
-          <div class="slb">通常ポイント</div>
+          <div class="slb">SPUポイント</div>
           <div class="sval"><span id="sv-normal">0</span><span class="sunit">pt</span></div>
-          <div class="ss">基本1倍分</div>
+          <div class="ss">入力倍率分</div>
         </div>
         <div class="scell highlight">
           <div class="slb">合計獲得予定</div>
@@ -303,6 +307,25 @@ html,body{height:100%;background:var(--bg);font-family:var(--sans);color:var(--t
       <div id="cap-warn" class="cap-warn"></div>
       <div id="cap-ok" class="cap-ok"></div>
 
+            <!-- SUP -->
+      <div class="card">
+        <div class="ch"><div class="ch-t">SPU（スーパーポイントアップ）</div></div>
+        <div class="card-body">
+          <div class="bonus-row" style="border-bottom:none;padding:0">
+            <div style="flex:1"><div class="bn">達成済みのSPU倍率</div></div>
+            <div style="display:flex;align-items:center;gap:4px">
+              <span style="font-size:12px;color:var(--text2)">+</span>
+              <input class="sup-input" type="text" inputmode="decimal" id="sup-input" placeholder="1" value="1" oninput="updateCalc()">
+              <span class="sup-unit">倍</span>
+            </div>
+          </div>
+          <div style="margin-top:10px;padding:8px 10px;background:var(--surface2);border-radius:var(--radius-sm);font-size:11px;color:var(--text2);line-height:1.7">
+            ⚠️ SPUポイントは倍率の端数処理により公式と数pt前後する場合があります。<br>
+            ⚠️ SPU各特典には月間獲得上限があります。正確な上限は楽天市場の公式サイトでご確認ください。
+          </div>
+        </div>
+      </div>
+      
       <!-- ボーナス倍率 -->
       <div class="card">
         <div class="ch"><div class="ch-t">ボーナス倍率</div></div>
@@ -598,16 +621,17 @@ function updateCalc(){
   const targetTaxAmt=targets.reduce((a,s)=>a+getAmt(s),0);
   const rawMarathon=Math.floor(targetTaxAmt*marathonRate/100);
   const marathonPt=Math.min(MARATHON_CAP,rawMarathon);
-  const normalPt=Math.floor(taxAmt/100);
-  const bonusRate=(card?1:0)+(goten?1:0)+kattara;
-  const bonusPt=Math.floor(taxAmt*bonusRate/100);
-  const totalPt=normalPt+marathonPt+bonusPt;
+  const supRate=Math.max(0,parseFloat(document.getElementById('sup-input').value)||0);
+  const supPt=Math.floor(taxAmt*supRate/100);
+  const intBonusRate=(card?1:0)+(goten?1:0)+kattara;
+  const intBonusPt=Math.floor(taxAmt*intBonusRate/100);
+  const totalPt=marathonPt+supPt+intBonusPt;
 
-  document.getElementById('h-rate-val').textContent=1+marathonRate+(card?1:0)+(goten?1:0)+kattara;
+  document.getElementById('h-rate-val').textContent=marathonRate+(card?1:0)+(goten?1:0)+kattara+supRate;
   document.getElementById('h-shops').textContent=shopCount;
   document.getElementById('sv-total').textContent=totalAmt.toLocaleString();
   document.getElementById('sv-marathon').textContent=marathonPt.toLocaleString();
-  document.getElementById('sv-normal').textContent=normalPt.toLocaleString();
+  document.getElementById('sv-normal').textContent=supPt.toLocaleString();
   document.getElementById('sv-total-pt').textContent=totalPt.toLocaleString();
 
   document.querySelectorAll('.prog-dot').forEach((d,i)=>{d.className='prog-dot'+(i<Math.min(shopCount,10)?' done':'')});

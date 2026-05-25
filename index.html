@@ -307,7 +307,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--sans);color:var(--t
       <div id="cap-warn" class="cap-warn"></div>
       <div id="cap-ok" class="cap-ok"></div>
 
-            <!-- SUP -->
+            <!-- SPU -->
       <div class="card">
         <div class="ch"><div class="ch-t">SPU（スーパーポイントアップ）</div></div>
         <div class="card-body">
@@ -320,7 +320,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--sans);color:var(--t
             </div>
           </div>
           <div style="margin-top:10px;padding:8px 10px;background:var(--surface2);border-radius:var(--radius-sm);font-size:11px;color:var(--text2);line-height:1.7">
-            ⚠️ SPUポイントは倍率の端数処理により公式と数pt前後する場合があります。<br>
+            ⚠️ 倍率の端数処理により公式と数pt前後する場合があります。<br>
             ⚠️ SPU各特典には月間獲得上限があります。正確な上限は楽天市場の公式サイトでご確認ください。
           </div>
         </div>
@@ -330,12 +330,6 @@ html,body{height:100%;background:var(--bg);font-family:var(--sans);color:var(--t
       <div class="card">
         <div class="ch"><div class="ch-t">ボーナス倍率</div></div>
         <div class="card-body">
-          <div class="bonus-row">
-            <div style="flex:1"><div class="bn">楽天カード</div><div class="bd2">楽天カードで支払い</div></div>
-            <a class="blink" href="https://a.r10.to/hYjkec" target="_blank" rel="noopener">申し込む</a>
-            <div class="brate">+1倍</div>
-            <label class="bonus-toggle"><input type="checkbox" id="card-cb" onchange="updateCalc()"><span class="bonus-slider"></span></label>
-          </div>
           <div class="bonus-row">
             <div style="flex:1"><div class="bn">5と0のつく日</div><div class="bd2">エントリーで+1倍</div></div>
             <a class="blink" href="https://a.r10.to/hP7Z6F" target="_blank" rel="noopener" target="_blank" rel="noopener">エントリー</a>
@@ -604,12 +598,10 @@ function renderShops(){
 }
 
 function updateCalc(){
-  card=document.getElementById('card-cb').checked;
   goten=document.getElementById('goten-cb').checked;
   taxMode=document.getElementById('tax-cb').checked;
 
   document.getElementById('badge-tax').style.display=taxMode?'':'none';
-  document.getElementById('badge-card').style.display=card?'':'none';
   document.getElementById('badge-goten').style.display=goten?'':'none';
   document.getElementById('badge-k1').style.display=(kattara===1)?'':'none';
   document.getElementById('badge-k2').style.display=(kattara===2)?'':'none';
@@ -624,11 +616,11 @@ function updateCalc(){
   const marathonPt=Math.min(MARATHON_CAP,rawMarathon);
   const supRate=Math.max(0,parseFloat(document.getElementById('sup-input').value)||0);
   const supPt=Math.floor(taxAmt*supRate/100);
-  const intBonusRate=(card?1:0)+(goten?1:0)+kattara;
+  const intBonusRate=(goten?1:0)+kattara;
   const intBonusPt=Math.floor(taxAmt*intBonusRate/100);
   const totalPt=marathonPt+supPt+intBonusPt;
 
-  document.getElementById('h-rate-val').textContent=marathonRate+(card?1:0)+(goten?1:0)+kattara+supRate;
+  document.getElementById('h-rate-val').textContent=marathonRate+(goten?1:0)+kattara+supRate;
   document.getElementById('h-shops').textContent=shopCount;
   document.getElementById('sv-total').textContent=totalAmt.toLocaleString();
   document.getElementById('sv-marathon').textContent=marathonPt.toLocaleString();
@@ -651,7 +643,6 @@ function updateCalc(){
     document.getElementById('msub').textContent='上限 7,000pt';
   }
   localStorage.setItem('shops', JSON.stringify(shops));
-  localStorage.setItem('card', card);
   localStorage.setItem('goten', goten);
   localStorage.setItem('kattara', kattara);
   localStorage.setItem('taxMode', taxMode);
@@ -810,7 +801,6 @@ async function initApp() {
   renderShops();
   if(_sup!==null)document.getElementById('sup-input').value=_sup;
   updateCalc(); renderCalendar();
-  document.getElementById('card-cb').checked  = card;
   document.getElementById('goten-cb').checked = goten;
   document.getElementById('tax-cb').checked   = taxMode;
   setKattara(kattara);

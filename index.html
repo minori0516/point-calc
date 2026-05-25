@@ -569,6 +569,7 @@ let card=localStorage.getItem('card')==='true';
 let goten=localStorage.getItem('goten')==='true';
 let kattara=_k;
 let taxMode=localStorage.getItem('taxMode')==='true';
+const _sup=localStorage.getItem('supRate');
 let calYear=2026, calMonth=new Date().getMonth()+1;
 
 function showInstall(){document.getElementById('installOverlay').classList.add('show')}
@@ -654,6 +655,7 @@ function updateCalc(){
   localStorage.setItem('goten', goten);
   localStorage.setItem('kattara', kattara);
   localStorage.setItem('taxMode', taxMode);
+  localStorage.setItem('supRate', document.getElementById('sup-input').value);
 }
 
 function setKattara(v){kattara=v;[0,1,2].forEach(i=>document.getElementById('k'+i).className='kbtn'+(i===v?' active':''));updateCalc()}
@@ -805,7 +807,9 @@ async function initApp() {
   }
 
   // 通常の初期化
-  renderShops(); updateCalc(); renderCalendar();
+  renderShops();
+  if(_sup!==null)document.getElementById('sup-input').value=_sup;
+  updateCalc(); renderCalendar();
   document.getElementById('card-cb').checked  = card;
   document.getElementById('goten-cb').checked = goten;
   document.getElementById('tax-cb').checked   = taxMode;
